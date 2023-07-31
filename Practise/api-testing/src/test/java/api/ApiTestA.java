@@ -1,8 +1,11 @@
 package api;
 
+import com.truth.model.Product;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
 
 public class ApiTestA {
 
@@ -67,4 +70,6 @@ public class ApiTestA {
 
         response.log().body();
     }
+
+
 }
