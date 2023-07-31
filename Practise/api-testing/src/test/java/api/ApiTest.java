@@ -4,6 +4,7 @@ import com.truth.model.Product;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 public class ApiTest {
 
@@ -17,6 +18,27 @@ public class ApiTest {
 
     }
 
+    @Test
+    public void getProducts(){
+       String endpoint = "http://localhost:80/api_testing/product/read.php";
+       var response = given()
+               .when()
+               .get(endpoint)
+               .then()
+               .assertThat()
+                    .statusCode(200).
+                        body("records.size()", greaterThan(0))
+                        .body("records.id", everyItem(notNullValue())).
+                        body("records.name", everyItem(notNullValue())).
+                        body("records.description", everyItem(notNullValue())).
+                        body("records.price", everyItem(notNullValue())).
+                        body("records.category_id", everyItem(notNullValue())).
+                        body("records.category_name", everyItem(notNullValue())).
+                        body("records.id[0]",equalTo("1003") );
+
+
+    }
+
 
     @Test
     public void getProduct(){
@@ -25,9 +47,16 @@ public class ApiTest {
                 given().
                         queryParam("id", 2).
                         when().
-                        get(endpoint).
-                        then();
-        response.log().body();
+                            get(endpoint).
+                        then()
+                        .assertThat().
+                            statusCode(200).body("id", equalTo("2"))
+                                              .body("name", equalTo("Cross-Back Training Tank")).
+                                                body("description", equalTo("The most awesome phone of 2013!"))
+                                              .body("price",equalTo( "299.00")).
+                                                body("category_id", equalTo("2")).
+                                                body("category_name", equalTo("Active Wear - Women"));
+       // response.log().body();
     }
 
     @Test
